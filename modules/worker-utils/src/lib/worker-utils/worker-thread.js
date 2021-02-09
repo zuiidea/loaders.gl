@@ -89,7 +89,7 @@ export default class WorkerThread {
    * @todo https://nodejs.org/api/async_hooks.html#async-resource-worker-pool
    */
   _createNodeWorker(source, name) {
-    this.url = `./${  getWorkerURL(source)}`;
+    this.url = `./${getWorkerURL(source)}`;
     const worker = new NodeWorker(this.url, {
       eval: false // We have already converted to URL
     });

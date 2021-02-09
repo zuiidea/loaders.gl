@@ -23,16 +23,6 @@ export default class WorkerFarm {
     return _workerFarm;
   }
 
-  // Create a single instance of a worker farm
-  static getWorkerFarm(props = {}) {
-    if (!_workerFarm) {
-      _workerFarm = new WorkerFarm({});
-    }
-    _workerFarm.setProps(props);
-
-    return _workerFarm;
-  }
-
   constructor({
     maxConcurrency = DEFAULT_MAX_CONCURRENCY,
     onMessage = null,
