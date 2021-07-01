@@ -1,9 +1,6 @@
 import test from 'tape-promise/tape';
-import {fetchFile, isBrowser, resolvePath} from '@loaders.gl/core';
-import {
-  _BrowserFileSystem as BrowserFileSystem,
-  _NodeFileSystem as NodeFileSystem
-} from '@loaders.gl/core';
+import {fetchFile, isBrowser} from '@loaders.gl/core';
+import {_BrowserFileSystem as BrowserFileSystem} from '@loaders.gl/core';
 
 export const IMAGE_URLS = [
   '@loaders.gl/images/test/data/img1-preview.png',

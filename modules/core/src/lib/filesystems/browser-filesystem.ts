@@ -1,5 +1,4 @@
 import type {FileSystem} from './filesystem';
-import {resolvePath} from '@loaders.gl/core';
 
 type BrowserFileSystemOptions = {
   fetch?: typeof fetch;
@@ -30,7 +29,7 @@ export default class BrowserFileSystem implements FileSystem {
       this.usedFiles[file.name] = false;
     }
 
-    this._fetch = this._fetch.bind(this);
+    this.fetch = this.fetch.bind(this);
   }
 
   // implements IFileSystem
@@ -56,8 +55,8 @@ export default class BrowserFileSystem implements FileSystem {
     const bytes = range && /bytes=($1)-($2)/.exec(range);
 
     if (bytes) {
-      const start = parseInt(bytes[1], 10);
-      const end = parseInt(bytes[2], 10);
+      const start = parseInt(bytes[1]);
+      const end = parseInt(bytes[2]);
       const data = await readFileSlice(file, start, end);
       const response = new Response(data);
       Object.defineProperty(response, 'url', {value: path});
