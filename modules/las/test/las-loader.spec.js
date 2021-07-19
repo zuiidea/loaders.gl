@@ -82,3 +82,13 @@ test('LASWorkerLoader#load(worker)', async (t) => {
   t.equal(data.attributes.POSITION.value.length, 80805 * 3, 'POSITION attribute was found');
   t.end();
 });
+
+test('LASLoader#shapes', async (t) => {
+  let data = await parse(fetchFile(LAS_BINARY_URL), LASLoader, {las: {shape: 'mesh'}});
+  validateMeshCategoryData(t, data);
+
+  data = await parse(fetchFile(LAS_BINARY_URL), LASLoader, {las: {shape: 'columnar-table'}});
+  validateMeshCategoryData(t, data);
+
+  t.end();
+});

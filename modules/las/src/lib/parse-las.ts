@@ -1,9 +1,10 @@
 // ported and es6-ified from https://github.com/verma/plasio/
 
 import type {LASLoaderOptions} from '../las-loader';
-import type {LASHeader} from './las-types';
+import type {LASMesh, LASHeader} from './las-types';
 import {getMeshBoundingBox} from '@loaders.gl/schema';
 import {LASFile} from './laslaz-decoder';
+import {getLASSchema} from './get-las-schema';
 
 type LASChunk = {
   count: number;
@@ -23,7 +24,7 @@ type LASChunk = {
 export default function parseLAS(
   arrayBuffer: ArrayBuffer,
   options: LASLoaderOptions = {}
-): LASHeader {
+): LASMesh {
   let pointIndex: number = 0;
 
   let positions: Float32Array | Float64Array;
@@ -32,7 +33,7 @@ export default function parseLAS(
   let classifications: Uint8Array;
   let originalHeader: any;
 
-  const result: any = {};
+  let result: LASMesh | undefined;
 
   // @ts-ignore Possibly undefined
   parseLASChunked(arrayBuffer, options.las?.skip, (decoder: any = {}, header: LASHeader) => {
@@ -47,8 +48,9 @@ export default function parseLAS(
       intensities = new Uint16Array(total);
       classifications = new Uint8Array(total);
 
-      Object.assign(result, {
-        loaderData: {header},
+      // @ts-expect-error
+      result = {
+        loaderData: header,
         mode: 0, // GL.POINTS
         attributes: {
           POSITION: {value: positions, size: 3},
@@ -56,9 +58,9 @@ export default function parseLAS(
           intensity: {value: intensities, size: 1},
           classification: {value: classifications, size: 1}
         }
-      });
+      };
 
-      if (colors) {
+      if (result && colors) {
         result.attributes.COLOR_0 = {value: colors, size: 4};
       }
     }
@@ -110,11 +112,16 @@ export default function parseLAS(
     );
   });
 
+  // @ts-expect-error
   result.header = {
     vertexCount: originalHeader.totalToRead,
-    boundingBox: getMeshBoundingBox(result.attributes)
+    boundingBox: getMeshBoundingBox(result?.attributes || {})
   };
-  return result as LASHeader;
+
+  if (result) {
+    result.schema = getLASSchema(result.loaderData, result.attributes);
+  }
+  return result as LASMesh;
 }
 
 /**
