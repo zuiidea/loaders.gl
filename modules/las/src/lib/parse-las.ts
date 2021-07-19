@@ -63,13 +63,13 @@ export default function parseLAS(
       intensities = new Uint16Array(total);
       classifications = new Uint8Array(total);
 
-      (lasMesh.loaderData = lasHeader),
-      (lasMesh.attributes = {
+      lasMesh.loaderData = lasHeader;
+      lasMesh.attributes = {
         POSITION: {value: positions, size: 3},
         // non-gltf attributes, use non-capitalized names for now
         intensity: {value: intensities, size: 1},
         classification: {value: classifications, size: 1}
-      });
+      };
 
       if (colors) {
         lasMesh.attributes.COLOR_0 = {value: colors, size: 4};
