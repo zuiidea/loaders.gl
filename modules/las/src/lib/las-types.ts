@@ -24,4 +24,6 @@ export type LASHeader = {
 export type LASMesh = Mesh & {
   loader: 'las';
   loaderData: LASHeader; // Draco specific data
+  topology: 'point-list';
+  mode: 0;
 };
